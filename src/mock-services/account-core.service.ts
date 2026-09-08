@@ -6,6 +6,12 @@ interface AccountRecord {
   currency: string;
 }
 
+export interface AccountSummary {
+  accountId: string;
+  currency: string;
+  balance: number;
+}
+
 /**
  * Legacy account core stub. See API_DOCUMENTATION.md.
  * DO NOT MODIFY.
@@ -31,6 +37,17 @@ export class AccountCoreService {
 
   async getCustomerId(accountId: string): Promise<string> {
     return this.get(accountId).customerId;
+  }
+
+  /** All accounts belonging to the given customer. */
+  async getAccountsByCustomer(customerId: string): Promise<AccountSummary[]> {
+    return [...this.accounts.entries()]
+      .filter(([, account]) => account.customerId === customerId)
+      .map(([accountId, account]) => ({
+        accountId,
+        currency: account.currency,
+        balance: account.balance,
+      }));
   }
 
   /** Debits the account. The legacy core does NOT validate balances. */

@@ -20,6 +20,9 @@ Legacy account core. Account data and money movement.
 #### `getCustomerId(accountId: string)`
 **Returns:** the ID of the customer who owns the account.
 
+#### `getAccountsByCustomer(customerId: string)`
+**Returns:** all accounts belonging to the customer, as `{ accountId, currency, balance }[]`. Each balance is in that account's own currency.
+
 #### `debit(accountId: string, amount: number)` / `credit(accountId: string, amount: number)`
 Moves money. **The legacy core does NOT validate balances or amounts** — callers are responsible for all checks.
 

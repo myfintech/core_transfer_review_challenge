@@ -1,4 +1,4 @@
-# Code Review Challenge: Funds Transfer Service
+# Code Review Challenge: Funds Transfer (Full-Stack)
 
 ## Welcome
 
@@ -17,55 +17,68 @@ You're welcome to use AI just like you would on the job. But your review is *you
 
 ## The Ticket (CORE-1893)
 
-> **Implement `POST /transfers`** — move money between a customer's own accounts, including cross-currency transfers.
+> **Move money between a customer's own accounts** — the `POST /transfers` API **and** the **Move Money** screen in the web app, including cross-currency transfers.
 >
 > **Acceptance Criteria:**
 > 1. Reject transfers that exceed the source account's available balance.
 > 2. Enforce a daily transfer limit of **$10,000 USD-equivalent per customer**, across all of their transfers that day.
-> 3. Requests carry an `Idempotency-Key` header. The same key must **never double-execute** a transfer, and a retried request must receive the **same response** as the original attempt.
+> 3. A single customer action must **never move money twice**. API requests carry an `Idempotency-Key` header: the same key must never double-execute a transfer, and a retried request must receive the **same response** as the original attempt. This guarantee must hold **end-to-end** — automatic retries and repeated clicks in the UI included.
 > 4. If the exchange-rate service is unavailable, **fail closed** — never guess or reuse a rate. (Compliance requirement: rates must be current at execution time.)
+> 5. **Move Money screen:** the customer picks a source and a destination account, enters an amount **in the source account's currency**, and submits. On success, show a confirmation with the transfer ID. On failure, tell the customer why.
 
 ---
 
 ## Quick Start
 
+Two processes — the API and the web client:
+
 ```bash
 # 1. Get the code under review
 git checkout coding-agent/CORE-1893-transfers
 
-# 2. Install dependencies
+# 2. API (terminal 1)
 npm install
+npm test        # the author's tests — they pass
+npm start       # http://localhost:5556
 
-# 3. Run the author's tests (they pass)
-npm test
-
-# 4. Optional: run the server for manual testing
-npm start
+# 3. Web client (terminal 2)
+cd client
+npm install
+npm run dev     # http://localhost:5173
 ```
 
 You can also read the change as a diff on GitHub:
-**Compare view:** `https://github.com/<org>/<repo>/compare/main...coding-agent/CORE-1893-transfers`
+**Compare view:** https://github.com/myfintech/core_transfer_review_challenge/compare/main...coding-agent/CORE-1893-transfers
 
 ---
 
 ## Project Structure
 
 ```
-src/
+src/                                # NestJS API
 ├── main.ts                         # App entry point
 ├── app.module.ts                   # Root module
 │
+├── accounts/                       # read-only account listing (pre-existing)
+│
 ├── mock-services/                  # DO NOT MODIFY — legacy core stubs
 │   ├── API_DOCUMENTATION.md        # ⭐ SERVICE DOCUMENTATION — read this!
-│   ├── account-core.service.ts     # balances, debit/credit
+│   ├── account-core.service.ts     # accounts, balances, debit/credit
 │   ├── exchange.service.ts         # FX rates
 │   └── transfer-log.service.ts     # transfer history
 │
-└── transfer/                       # ⭐ THE CODE UNDER REVIEW
+└── transfer/                       # ⭐ UNDER REVIEW (API side)
     ├── transfer.controller.ts
-    ├── transfer.types.ts
-    ├── transfer.service.ts         # review this
+    ├── transfer.types.ts           # the API contract
+    ├── transfer.service.ts
     └── transfer.service.spec.ts    # the author's tests
+
+client/                             # React web app (Vite)
+└── src/
+    ├── App.tsx                     # shell + accounts view (pre-existing)
+    ├── api.ts                      # ⭐ UNDER REVIEW (client API layer)
+    ├── MoveMoney.tsx               # ⭐ UNDER REVIEW (the new screen)
+    └── types.ts                    # client-side contract mirror
 ```
 
 ---
