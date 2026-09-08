@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import { fetchAccounts } from './api';
+import { MoveMoney } from './MoveMoney';
 import { Account } from './types';
 
 const DEMO_CUSTOMERS = ['CUST-1', 'CUST-2'];
@@ -65,10 +66,11 @@ export default function App() {
         </table>
       </section>
 
-      <section className="card placeholder">
-        <h2>Move money</h2>
-        <p>Coming soon — CORE-1893.</p>
-      </section>
+      <MoveMoney
+        customerId={customerId}
+        accounts={accounts}
+        onTransferComplete={loadAccounts}
+      />
     </main>
   );
 }
