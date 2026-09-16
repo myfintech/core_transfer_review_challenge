@@ -23,7 +23,7 @@ This PR was written by an AI coding agent and all of its tests pass. You're the 
 > 1. Reject transfers that exceed the source account's available balance.
 > 2. Enforce a daily transfer limit of **$10,000 USD-equivalent per customer**, across all of their transfers that day.
 > 3. A single customer action must **never move money twice**. API requests carry an `Idempotency-Key` header: the same key must never double-execute a transfer, and a retried request must receive the **same response** as the original attempt. This guarantee must hold **end-to-end** — automatic retries and repeated clicks in the UI included.
-> 4. If the exchange-rate service is unavailable, **fail closed** — never guess or reuse a rate. (Compliance requirement: rates must be current at execution time.)
+> 4. **Currency conversion:** a cross-currency transfer needs a live exchange rate from the exchange-rate service. If that service is unavailable, **reject the transfer** with a clear error — never fall back to a cached, estimated or previous rate. (Compliance requirement: the rate applied must be the live rate at the moment the transfer executes.)
 > 5. **Move Money screen:** the customer picks a source and a destination account, enters an amount **in the source account's currency**, and submits. On success, show a confirmation with the transfer ID. On failure, tell the customer why.
 > 6. **Support debugging:** log every transfer request in full — customer, source and destination accounts, amount, currency — so Support can reproduce a customer's issue from the logs alone.
 
