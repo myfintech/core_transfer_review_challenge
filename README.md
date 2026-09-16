@@ -9,7 +9,7 @@ You're reviewing a pull request. Our AI coding agent implemented ticket **CORE-1
 2. Your **top issues, ranked by severity**
 3. What you'd tell the author
 
-You're welcome to use AI just like you would on the job. But your review is *your* review — every issue you raise, you should be able to demonstrate and defend. We're not grading what your AI finds; we're grading what you decide.
+This PR was written by an AI coding agent and all of its tests pass. You're the human gate — the review is yours alone, so please close any AI assistants and disable inline autocomplete for the hour. Everything else is fair game: read the code, run the tests, run the app, write your own tests. Every issue you raise, you should be able to demonstrate and defend.
 
 **Estimated Time:** 45-60 minutes
 
@@ -25,6 +25,7 @@ You're welcome to use AI just like you would on the job. But your review is *you
 > 3. A single customer action must **never move money twice**. API requests carry an `Idempotency-Key` header: the same key must never double-execute a transfer, and a retried request must receive the **same response** as the original attempt. This guarantee must hold **end-to-end** — automatic retries and repeated clicks in the UI included.
 > 4. If the exchange-rate service is unavailable, **fail closed** — never guess or reuse a rate. (Compliance requirement: rates must be current at execution time.)
 > 5. **Move Money screen:** the customer picks a source and a destination account, enters an amount **in the source account's currency**, and submits. On success, show a confirmation with the transfer ID. On failure, tell the customer why.
+> 6. **Support debugging:** log every transfer request in full — customer, source and destination accounts, amount, currency — so Support can reproduce a customer's issue from the logs alone.
 
 ---
 
